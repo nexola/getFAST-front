@@ -149,38 +149,35 @@ function Form() {
         />
       </div>
       <div className="row">
-        <div className="mb-3 col-md-8">
-          <label htmlFor="address">Endereço</label>
-          <input
-            type="text"
-            className="form-control"
-            id="address"
-            name="address"
-            placeholder="Rua Mariano Procópio"
-          />
-        </div>
-        <div className="mb-3 col-md-4">
-          <label htmlFor="neighborhood">Bairro</label>
-          <input
-            type="text"
-            className="form-control"
-            id="neighborhood"
-            name="neighborhood"
-            placeholder="Jardim Ângela"
-          />
-        </div>
+        <Input
+          options={{
+            id: "number",
+            label: "Endereço",
+            type: "text",
+            placeholder: "Rua Mariano Procópio",
+            md: "col-md-8",
+          }}
+        />
+        <Input
+          options={{
+            id: "neighborhood",
+            label: "Bairro",
+            type: "text",
+            placeholder: "Jardim Ângela",
+            md: "col-md-4",
+          }}
+        />
       </div>
       <div className="row">
-        <div className="mb-3 col-md-6">
-          <label htmlFor="city">Cidade</label>
-          <input
-            type="text"
-            className="form-control"
-            id="city"
-            name="city"
-            placeholder="Juíz de Fora"
-          />
-        </div>
+        <Input
+          options={{
+            id: "city",
+            label: "Cidade",
+            type: "text",
+            placeholder: "Juíz de Fora",
+            md: "col-md-5",
+          }}
+        />
         <div className="mb-3 col-md-3">
           <label htmlFor="state">Estado</label>
           <select id="state" name="state" className="form-control">
@@ -188,19 +185,18 @@ function Form() {
             <option>...</option>
           </select>
         </div>
-        <div className="mb-3 col-md-3">
-          <label htmlFor="complement">Complemento</label>
-          <input
-            type="text"
-            className="form-control"
-            id="complement"
-            name="complement"
-            placeholder="Bloco 2, apto 101"
-          />
-        </div>
+        <Input
+          options={{
+            id: "complement",
+            label: "Complemento",
+            type: "text",
+            placeholder: "Bloco 2, apto 24",
+            md: "col-md-4",
+          }}
+        />
       </div>
 
-      <button type="submit" className="btn btn-primary">
+      <button type="submit" className="btn btn-primary col-md-12">
         Criar conta
       </button>
     </form>
@@ -217,7 +213,7 @@ function Input({ options }) {
         id={options.id}
         name={options.id}
         placeholder={options.placeholder}
-        data-mask={options.dataMask ? options.dataMask : ""}
+        data-mask={options.dataMask ? options.dataMask : false}
       />
     </div>
   );
