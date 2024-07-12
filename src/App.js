@@ -1,4 +1,35 @@
 import "./js/app.js";
+import { useState } from "react";
+
+const states = [
+  "AC",
+  "AL",
+  "AP",
+  "AM",
+  "BA",
+  "CE",
+  "DF",
+  "ES",
+  "GO",
+  "MA",
+  "MT",
+  "MS",
+  "MG",
+  "PA",
+  "PB",
+  "PR",
+  "PE",
+  "PI",
+  "RJ",
+  "RN",
+  "RS",
+  "RO",
+  "RR",
+  "SC",
+  "SP",
+  "SE",
+  "TO",
+];
 
 function App() {
   return (
@@ -12,7 +43,7 @@ function App() {
 
 function Splash() {
   return (
-    <div className="splash active">
+    <div className="splash active mt-5">
       <div className="splash-icon"></div>
     </div>
   );
@@ -21,7 +52,7 @@ function Splash() {
 function Header() {
   return (
     <div className="text-center mt-4">
-      <h1 className="h2">Crie sua conta</h1>
+      <h1 className="h2">Crie sua conta empresarial</h1>
       <p className="lead">
         Comece a usar o getFast agora mesmo. Crie sua conta e gerencie seus
         usuários e integrações.
@@ -35,7 +66,7 @@ function Main() {
     <main className="main h-100 w-100">
       <div className="container h-100">
         <div className="row h-100">
-          <div className="col-sm-10 col-md-8 col-lg-6 mx-auto d-table h-100">
+          <div className="col-lg-8 col-md-8 col-lg-6 mx-auto d-table h-100">
             <div className="d-table-cell align-middle">
               <Header />
               <Card />
@@ -61,10 +92,61 @@ function Card() {
 }
 
 function Form() {
+  const [form, setForm] = useState({
+    name: "",
+    email: "",
+    cnpj: "",
+    telephone: "",
+    cep: "",
+    number: "",
+    address: "",
+    neighborhood: "",
+    city: "",
+    state: "",
+    complement: "",
+  });
+
+  function handleSubmit(e) {
+    e.preventDefault();
+    console.log(form);
+
+    fetch("http://localhost:8080/accounts", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(form),
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        const form = document.getElementById("form-signup-account");
+        form.querySelectorAll(".is-invalid").forEach((input) => {
+          input.classList.remove("is-invalid");
+          input.placeholder = "";
+        });
+
+        if (data.status === 422) {
+          data.errors.forEach((error) => {
+            const inputError = document.getElementById(error.fieldName);
+            inputError.classList.add("is-invalid");
+            inputError.value = "";
+            inputError.placeholder = error.message;
+          });
+        }
+
+        console.log("Success:", data);
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+      });
+  }
+
   return (
-    <form>
+    <form onSubmit={handleSubmit} id="form-signup-account">
       <div className="row">
         <Input
+          setForm={setForm}
+          form={form}
           options={{
             id: "name",
             label: "Nome",
@@ -75,48 +157,33 @@ function Form() {
       </div>
       <div className="row">
         <Input
+          setForm={setForm}
+          form={form}
           options={{
             id: "email",
             label: "Email",
-            type: "email",
-            placeholder: "email@exemplo.com.br",
-            md: "col-md-6",
-          }}
-        />
-        <Input
-          options={{
-            id: "password",
-            label: "Senha",
-            type: "password",
-            placeholder: "Senha",
-            md: "col-md-6",
-          }}
-        />
-      </div>
-      <div className="row">
-        <Input
-          options={{
-            id: "cpf",
-            label: "CPF",
             type: "text",
-            placeholder: "000.000.000-00",
-            md: "col-md-6",
-            dataMask: "000.000.000-00",
+            placeholder: "email@exemplo.com.br",
+            md: "col-md-7",
           }}
         />
         <Input
+          setForm={setForm}
+          form={form}
           options={{
             id: "cnpj",
             label: "CNPJ",
             type: "text",
             placeholder: "00.000.000/0000-00",
-            md: "col-md-6",
+            md: "col-md-5",
             dataMask: "00.000.000/0000-00",
           }}
         />
       </div>
       <div className="row">
         <Input
+          setForm={setForm}
+          form={form}
           options={{
             id: "telephone",
             label: "Celular",
@@ -128,9 +195,11 @@ function Form() {
         />
 
         <Input
+          setForm={setForm}
+          form={form}
           options={{
             id: "cep",
-            label: "CPF",
+            label: "CEP",
             type: "text",
             placeholder: "00000-000",
             md: "col-md-4",
@@ -139,6 +208,8 @@ function Form() {
         />
 
         <Input
+          setForm={setForm}
+          form={form}
           options={{
             id: "number",
             label: "Número",
@@ -150,8 +221,10 @@ function Form() {
       </div>
       <div className="row">
         <Input
+          setForm={setForm}
+          form={form}
           options={{
-            id: "number",
+            id: "address",
             label: "Endereço",
             type: "text",
             placeholder: "Rua Mariano Procópio",
@@ -159,6 +232,8 @@ function Form() {
           }}
         />
         <Input
+          setForm={setForm}
+          form={form}
           options={{
             id: "neighborhood",
             label: "Bairro",
@@ -170,6 +245,8 @@ function Form() {
       </div>
       <div className="row">
         <Input
+          setForm={setForm}
+          form={form}
           options={{
             id: "city",
             label: "Cidade",
@@ -180,12 +257,21 @@ function Form() {
         />
         <div className="mb-3 col-md-3">
           <label htmlFor="state">Estado</label>
-          <select id="state" name="state" className="form-control">
-            <option defaultValue={"SP"}>Escolha...</option>
-            <option>...</option>
+          <select
+            id="state"
+            name="state"
+            className="form-control"
+            onChange={(e) => setForm({ ...form, state: e.target.value })}
+          >
+            <option defaultValue={""}>Escolha...</option>
+            {states.map((state) => (
+              <option value={state}>{state}</option>
+            ))}
           </select>
         </div>
         <Input
+          setForm={setForm}
+          form={form}
           options={{
             id: "complement",
             label: "Complemento",
@@ -196,18 +282,21 @@ function Form() {
         />
       </div>
 
-      <button type="submit" className="btn btn-primary col-md-12">
-        Criar conta
-      </button>
+      <button className="btn btn-primary col-md-12">Criar conta</button>
     </form>
   );
 }
 
-function Input({ options }) {
+function Input({ options, setForm, form }) {
+  function handleChange(e) {
+    setForm({ ...form, [options.id]: e.target.value });
+  }
+
   return (
     <div className={`mb-3 ${options.md ? options.md : ""}`}>
       <label htmlFor={options.id}>{options.label}</label>
       <input
+        onChange={handleChange}
         type={options.type}
         className="form-control"
         id={options.id}
